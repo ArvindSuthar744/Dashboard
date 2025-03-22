@@ -103,7 +103,6 @@ const Stocks = () => {
       alert("Please fill all fields");
       return;
     }
-
     const newStock = {
       id: Date.now(), // Use a unique ID for local state
       name,
