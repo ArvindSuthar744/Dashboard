@@ -1,6 +1,7 @@
 
 import './App.css'
 import Dashboard from './Pages/Dashboard'
+import Sidebar from './Pages/Sidebar'
 
 function App() {
 
@@ -9,8 +10,10 @@ function App() {
     <>
 
     
-    <div>
-    <Dashboard/>
+    <div className='flex h-full'>
+      <Sidebar/>
+      <Dashboard/>
+   
 
     </div>
  
