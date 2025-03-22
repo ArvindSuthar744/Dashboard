@@ -12,7 +12,19 @@ function Sidebar() {
 
                 <div>
                     <div className='py-1 px-7 flex gap-2.5 items-center'>
-                        <i className="fa-solid fa-list text-xl"></i>
+                    <i className="fa-solid fa-chart-pie text-xl"></i>
+                        <h1 className='text-lg'>Dashbord</h1>
+                    </div>
+                    <div className='py-1 px-7 flex gap-2.5 items-center'>
+                    <i className="fa-solid fa-chart-pie text-xl"></i>
+                        <h1 className='text-lg'>Stocks</h1>
+                    </div>
+                    <div className='py-1 px-7 flex gap-2.5 items-center'>
+                    <i className="fa-solid fa-chart-pie text-xl"></i>
+                        <h1 className='text-lg'>Tax </h1>
+                    </div>
+                    <div className='py-1 px-7 flex gap-2.5 items-center'>
+                    <i className="fa-solid fa-chart-pie text-xl"></i>
                         <h1 className='text-lg'>Dashbord</h1>
                     </div>
 
