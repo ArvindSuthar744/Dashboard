@@ -9,7 +9,7 @@ function Sidebar() {
       <div className="w-[200px] h-lvh bg-[#032313] text-white flex flex-col gap-5 ">
         <div className="py-5 flex gap-2.5 items-center justify-center">
           <i className="fa-solid fa-chart-pie text-2xl"></i>
-          <h1 className="text-xl">Gainers.com</h1>
+          <h1 className="text-xl">Investor-Hub</h1>
         </div>
 
         <div className="w-full h-[85vh] flex flex-col  justify-between">
