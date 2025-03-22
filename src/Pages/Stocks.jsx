@@ -19,7 +19,7 @@ const Stocks = () => {
         .then((data) => {
           // Filter recommendations based on the search query
           const filteredStocks = data.bestMatches || [];
-          console.log(data)
+          console.log(data);
           setRecommendations(filteredStocks);
         })
         .catch((error) => {
@@ -55,10 +55,15 @@ const Stocks = () => {
       name,
       buyPrice: parseFloat(buyPrice),
       quantity: parseInt(quantity),
-      currentPrice: currentStockDetails ? parseFloat(currentStockDetails["05. price"]) : 0, // Use current price from API
+      currentPrice: currentStockDetails
+        ? parseFloat(currentStockDetails["05. price"])
+        : 0, // Use current price from API
     };
 
     console.log(newStock)
+
+    console.log(stocks.currentPrice);
+
 
     setStocks([...stocks, newStock]);
     setName("");
@@ -119,7 +124,9 @@ const Stocks = () => {
 
         {/* Input Form */}
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Add Stock</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            Add Stock
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <input
               type="text"
@@ -174,7 +181,9 @@ const Stocks = () => {
 
         {/* Stock List */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Your Stocks</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            Your Stocks
+          </h2>
           {stocks.length === 0 ? (
             <p className="text-gray-600">No stocks added yet.</p>
           ) : (
@@ -192,6 +201,9 @@ const Stocks = () => {
                       <p className="text-gray-600">
                         Buy Price: ₹{stock.buyPrice.toFixed(2)} |  Quantity:{" "}
                         {stock.quantity}
+
+                        Buy Price: ₹{stock.buyPrice.toFixed(2)} | Quantity:{" "}
+                        {stock.quantity} | Current Price: {stock.currentPrice}
                       </p>
                       <p className="text-gray-600">
                         Total Investment: ₹
