@@ -1,24 +1,22 @@
+import "./App.css";
+import Dashboard from "./Pages/Dashboard";
+import Sidebar from "./Pages/Sidebar";
+import Stocks from "./Pages/Stocks";
 
-import './App.css'
-import Dashboard from './Pages/Dashboard'
-import Sidebar from './Pages/Sidebar'
+import { BrowserRouter, Route, Routes } from "react-router";
 
 function App() {
-
-
   return (
-    <>
-
-    
-    <div className='flex h-full'>
-      <Sidebar/>
-      <Dashboard/>
-   
-
+    <div className="flex ">
+      <BrowserRouter>
+        <Sidebar />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/stockdetails" element={<Stocks />} />
+        </Routes>
+      </BrowserRouter>
     </div>
- 
-    </>
-  )
+  );
 }
 
-export default App
+export default App;
