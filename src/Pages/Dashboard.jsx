@@ -29,6 +29,7 @@ function Dashboard() {
         for (const doc of snapshot.docs) {
           const stock = doc.data();
           const { buyPrice, quantity, symbol } = stock;
+          
 
           // Fetch current price from Alpha Vantage API
           const currentPriceResponse = await fetch(
@@ -92,6 +93,9 @@ function Dashboard() {
     setMessages((prevMessages) => [...prevMessages, aiResponse]);
   };
 
+
+
+
   return (
     <>
       <div className="w-[100%] border">
@@ -128,14 +132,14 @@ function Dashboard() {
           <div className="w-[100%] flex   gap-4   h-[75vh] ">
             {/* Left */}
 
-            <div className="w-2/4 flex-1 gap-5 flex flex-col relative">
+            <div className="w-2/4 flex-1 gap-5 flex flex-col relative ">
               {/* 3 */}
               <div className="px-5  py-3  rounded-xl flex-1 shadow-lg">
                 <h3 className="text-md font-semibold">Portfolio Performance</h3>
                 <PieChartComponent />
               </div>
               {/* 4 */}
-              <div className="px-5 py-3  rounded-xl  flex-1 shadow-xl">
+              <div className="px-5 py-3  rounded-xl  flex-1 shadow-lg">
                 <div className="flex items-center justify-between">
                   <h3 className="text-md font-semibold">
                     Top Performing Stocks
@@ -182,14 +186,16 @@ function Dashboard() {
                 </ul>
               </div>
             </div>
+
           </div>
 
           <div className="w-[400px] h-[75vh] py-1 px-3 text-xl rounded-xl flex flex-col justify-between shadow-lg">
-            <div className="text-center">
+            <div className="flex items-center gap-2 justify-center">
+            <i class="fa-solid fa-message text-[17px]"></i>
               <h2>Ai Assistant</h2>
             </div>
 
-            <div className="overflow-y-auto py-3 ps-1 no-scrollbar text-start px-5 rounded-md">
+            <div className="overflow-y-auto py-3 ps-1 no-scrollbar text-start px-5 rounded-md shadow-inner">
               <p className="text-[16px]">
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                 Tempore facere dolor quam, ab eligendi minus nulla officia
@@ -238,7 +244,7 @@ function Dashboard() {
                 name="inp"
                 id="inp"
                 className="border rounded-lg w-full h-[30px] my-2 text-sm px-3 font-semibold"
-                placeholder="Ask AI"
+                placeholder="Ask AI..."
               />
               <button className="bg-blue-500 shadow-lg shadow-blue-500/50 py-0.5 px-2 rounded-sm">
                 <i className="fa-solid fa-check"></i>

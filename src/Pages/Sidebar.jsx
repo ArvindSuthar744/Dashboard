@@ -5,8 +5,8 @@ function Sidebar() {
   const navigate = useNavigate();
 
   return (
-    <div className="">
-      <div className="w-[200px] h-lvh bg-[#032313] text-white flex flex-col gap-5 ">
+    <div className="bg-[#032313]">
+      <div className="w-[200px] h-lvh  text-white flex flex-col gap-5 ">
         <div className="py-5 flex gap-2.5 items-center justify-center">
           <i className="fa-solid fa-chart-pie text-2xl"></i>
           <h1 className="text-xl">Gainers.com</h1>
@@ -20,18 +20,25 @@ function Sidebar() {
             className="py-1 px-7 flex gap-2.5 items-center cursor-pointer"
           >
            <img src="../public/dash.png" alt="" />
-            <h1 className="text-lg">Dashbord</h1>
+            <h1 className="text-md">Dashbord</h1>
           </div>
           <div
             onClick={() => navigate("/stocks")}
             className="py-1 px-7 flex gap-2.5 items-center cursor-pointer"
           >
-            <i className="fa-solid fa-landmark text-xl"></i>
-            <h1 className="text-lg">Stocks</h1>
+            <i className="fa-solid fa-landmark text-md"></i>
+            <h1 className="text-md">Stocks</h1>
+          </div>
+          <div
+            onClick={() => navigate("/news")}
+            className="py-1 px-7 flex gap-2.5 items-center cursor-pointer"
+          >
+            <i className="fa-solid fa-landmark text-md"></i>
+            <h1 className="text-md">News</h1>
           </div>
         </div>
 
-        <div className="w-[98%] mx-1 py-2 border rounded-md flex items-center gap-1.5 ">
+        <div className="w-[96%] mx-1 py-2 border border-gray-400 rounded-md flex items-center gap-1.5 ">
             <img src="../public/profile.png" className="w-8 h-8 rounded-[50%] mx-2 " alt="profile photo" />
 
             <div className="flex justify-between pt-1.5 gap-14">

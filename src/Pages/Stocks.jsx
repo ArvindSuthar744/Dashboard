@@ -177,21 +177,22 @@ const Stocks = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-gray-100 p-6">
-      <div className="mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Stock Tracker</h1>
+    <div className="w-full h-screen bg-gray-100 p-6 overflow-y-auto no-scrollbar">
+      <div className="mx-auto  bg-white p-6 rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Stock Tracker</h1>
 
         {/* Search Bar for Stock Recommendations */}
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
-            Search Stock
-          </h2>
+          <div className="flex gap-2 items-center mb-3">
+          <i className="fa-solid fa-magnifying-glass text-lg"></i>
+          <h2 className="text-xl font-semibold text-gray-700 ">Search Stock</h2>
+          </div>
           <input
             type="text"
             placeholder="Search for a stock (e.g., RELIANCE, TCS)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none"
           />
           {/* Display Recommendations */}
           {recommendations.length > 0 && (
@@ -217,38 +218,40 @@ const Stocks = () => {
 
         {/* Input Form */}
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
-            Add Stock
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex gap-2 items-center mb-3">
+          <i class="fa-solid fa-arrow-up-from-bracket text-lg"></i>
+          <h2 className="text-xl font-semibold text-gray-700 ">Add Stock</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
             <input
               type="text"
               placeholder="Stock Name"
               value={name}
               readOnly // Prevent manual editing
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-gray-100"
+              className="p-2 border border-gray-300 rounded-lg focus:outline-none bg-gray-100"
             />
             <input
               type="number"
               placeholder="Buy Price"
               value={buyPrice}
               onChange={(e) => setBuyPrice(e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              className="px-2 border border-gray-300 rounded-lg focus:outline-none"
             />
             <input
               type="number"
               placeholder="Quantity"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              className="p-2 border border-gray-300 rounded-lg focus:outline-none"
             />
-          </div>
-          <button
+            <button
             onClick={addStock}
-            className="mt-4 w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+            className="w-full  bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
           >
             Add Stock
           </button>
+          </div>
+          
         </div>
 
         {/* Display Current Stock Details */}
@@ -273,10 +276,11 @@ const Stocks = () => {
         )}
 
         {/* Stock List */}
-        <div className="h-[40vh] overflow-y-auto">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
-            Your Stocks
-          </h2>
+        <div className="h-[45vh] overflow-y-auto ">
+          <div className="flex gap-2 items-center mb-3">
+          <i class="fa-solid fa-briefcase text-xl"></i>
+          <h2 className="text-xl font-semibold text-gray-700">Your Stocks</h2>
+          </div>
           {stocks.length === 0 ? (
             <p className="text-gray-600">No stocks added yet.</p>
           ) : (
@@ -311,10 +315,13 @@ const Stocks = () => {
                     </div>
                     <button
                       onClick={() => removeStock(stock.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
+                      className="text-red-500 hover:text-white hover:bg-red-700 transition-all duration-300  border text-center p-1 rounded-md"
+                    ><i class="fa-solid fa-trash-can text-lg translate-y-[-0.5] px-1"></i>
+                      {/* <i className="fa-solid fa-xmark text-xl translate-y-0.5 px-1"></i> */}
                       Remove
                     </button>
+                      
+
                   </div>
                 </div>
               ))}
