@@ -1,6 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { db } from "../Backend/firestart"; // Import Firestore
+import { collection, getDocs } from "firebase/firestore";
 
 function Dashboard() {
+  const [totalInvested, setTotalInvested] = useState(0); // State to store total invested value
+  const [currentValue, setCurrentValue] = useState(0); // State to store current value
+  const [totalProfitLoss, setTotalProfitLoss] = useState(0); // State to store total profit/loss
+
+  // Fetch stocks data from Firestore and calculate total invested, current value, and profit/loss
+  useEffect(() => {
+    const fetchStocksAndCalculateValues = async () => {
+      try {
+        // Reference to the stocks subcollection for the user
+        const stocksRef = collection(db, "Users", "cs@gmail.com", "stocks");
+
+        // Fetch all documents in the stocks subcollection
+        const snapshot = await getDocs(stocksRef);
+
+        let totalInvestedValue = 0;
+        let totalCurrentValue = 0;
+        let totalProfitLossValue = 0;
+
+        // Fetch current price for each stock and calculate values
+        for (const doc of snapshot.docs) {
+          const stock = doc.data();
+          const { buyPrice, quantity, symbol } = stock;
+
+          // Fetch current price from Alpha Vantage API
+          const currentPriceResponse = await fetch(
+            `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=ZNJ12HBDRNEBYCNT`
+          );
+          const currentPriceData = await currentPriceResponse.json();
+          const currentPrice = parseFloat(currentPriceData["Global Quote"]["05. price"]);
+
+          // Calculate values
+          totalInvestedValue += buyPrice * quantity;
+          totalCurrentValue += currentPrice * quantity;
+          totalProfitLossValue += (currentPrice - buyPrice) * quantity;
+        }
+
+        // Update the state with the calculated values
+        setTotalInvested(totalInvestedValue);
+        setCurrentValue(totalCurrentValue);
+        setTotalProfitLoss(totalProfitLossValue);
+      } catch (error) {
+        console.error("Error fetching stocks data:", error);
+      }
+    };
+
+    fetchStocksAndCalculateValues(); // Call the function
+  }, []); // Run only once when the component mounts
+
   return (
     <>
       <div className="w-[100%] border border-red-500 px-5 ">
@@ -9,16 +59,21 @@ function Dashboard() {
         </div>
 
         <div className="flex items-center justify-center gap-3">
+          {/* Invested */}
           <div className="w-[33%] border py-2 px-4 rounded-2xl">
-            <h2 className="text-2xl text-bold">&#x20B9; 150000</h2>
+            <h2 className="text-2xl text-bold">&#x20B9; {totalInvested.toFixed(2)}</h2>
             <p>Invested</p>
           </div>
+
+          {/* Current Value */}
           <div className="w-[33%] border py-2 px-4 rounded-2xl">
-            <h2 className="text-2xl text-bold">&#x20B9; 150000</h2>
+            <h2 className="text-2xl text-bold">&#x20B9; {currentValue.toFixed(2)}</h2>
             <p>Current Value</p>
           </div>
+
+          {/* Total P/L */}
           <div className="w-[33%] border py-2 px-4 rounded-2xl">
-            <h2 className="text-2xl text-bold">&#x20B9; 150000</h2>
+            <h2 className="text-2xl text-bold" style={{color:totalProfitLoss >= 0 ? "green" : "red"}}>&#x20B9; {totalProfitLoss.toFixed(2)}</h2>
             <p>Total P/L</p>
           </div>
         </div>

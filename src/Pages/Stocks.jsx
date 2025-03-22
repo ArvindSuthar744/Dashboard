@@ -1,4 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { db } from "../Backend/firestart";
+import {
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
 
 const Stocks = () => {
   const [stocks, setStocks] = useState([]); // List of added stocks
@@ -8,6 +17,22 @@ const Stocks = () => {
   const [searchQuery, setSearchQuery] = useState(""); // Search query
   const [recommendations, setRecommendations] = useState([]); // Stock name recommendations
   const [currentStockDetails, setCurrentStockDetails] = useState(null); // Current stock details
+  const [stockSymbol, setStockSymbol] = useState("");
+
+  // const getCurrentPrice = (symbol) => {
+  //   fetch(
+  //     `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=Z2RAKB8N42VBOPZ5`
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log("Symbol: ", symbol);
+  //       let s = data["Global Quote"];
+  //       console.log("->>> ", s["05. price"]);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching stock details:", error);
+  //     });
+  // };
 
   // Fetch stock recommendations from Alpha Vantage API
   useEffect(() => {
@@ -19,7 +44,7 @@ const Stocks = () => {
         .then((data) => {
           // Filter recommendations based on the search query
           const filteredStocks = data.bestMatches || [];
-          console.log(data);
+          console.log(filteredStocks);
           setRecommendations(filteredStocks);
         })
         .catch((error) => {
@@ -44,16 +69,45 @@ const Stocks = () => {
       });
   };
 
+  // Fetch stocks from Firestore on component load
+  useEffect(() => {
+    const fetchStocksFromFirestore = async () => {
+      try {
+        // Reference to the user's "stocks" subcollection
+        const stocksRef = collection(db, "Users", "cs@gmail.com", "stocks");
+
+        // Fetch all documents from the "stocks" subcollection
+        const querySnapshot = await getDocs(stocksRef);
+
+        // Map the documents to an array of stock objects
+        const fetchedStocks = querySnapshot.docs.map((doc) => ({
+          name: doc.id, // Use the document ID as the stock ID
+          ...doc.data(), // Spread the document data (stockname, buyingPrice, quantity)
+        }));
+
+        // Update the stocks state with the fetched data
+        setStocks(fetchedStocks);
+
+        console.log("Fetched: ", fetchedStocks);
+      } catch (error) {
+        console.error("Error fetching stocks from Firestore:", error);
+      }
+    };
+
+    fetchStocksFromFirestore();
+  }, []);
+
   // Add a new stock
-  const addStock = () => {
+  const addStock = async () => {
     if (!name || !buyPrice || !quantity) {
       alert("Please fill all fields");
       return;
     }
 
     const newStock = {
-      id: Date.now(),
+      id: Date.now(), // Use a unique ID for local state
       name,
+      symbol: stockSymbol,
       buyPrice: parseFloat(buyPrice),
       quantity: parseInt(quantity),
       currentPrice: currentStockDetails
@@ -61,18 +115,59 @@ const Stocks = () => {
         : 0, // Use current price from API
     };
 
-    console.log(stocks.currentPrice);
+    try {
+      // Add stock data to the user's "stocks" subcollection with stock name as document ID
+      const stocksRef = doc(
+        db,
+        "Users",
+        "cs@gmail.com",
+        "stocks",
+        newStock.name
+      );
+      await setDoc(stocksRef, {
+        stockname: newStock.name,
+        symbol: stockSymbol,
+        buyPrice: parseFloat(newStock.buyPrice),
+        quantity: parseInt(newStock.quantity),
+      });
 
-    setStocks([...stocks, newStock]);
-    setName("");
-    setBuyPrice("");
-    setQuantity("");
-    setCurrentStockDetails(null); // Reset current stock details
+      console.log("Added manually --> ", newStock);
+
+      // Update local state
+      setStocks([...stocks, newStock]);
+      setName("");
+      setBuyPrice("");
+      setStockSymbol("");
+      setQuantity("");
+      setCurrentStockDetails(null); // Reset current stock details
+    } catch (error) {
+      console.error("Error saving stock data to Firestore:", error);
+    }
   };
 
   // Remove a stock
-  const removeStock = (id) => {
-    setStocks(stocks.filter((stock) => stock.id !== id));
+  const removeStock = async (id) => {
+    try {
+      // Find the stock to be removed
+      const stockToRemove = stocks.find((stock) => stock.id === id);
+
+      if (stockToRemove) {
+        // Delete the stock document from Firestore
+        const stockRef = doc(
+          db,
+          "Users",
+          "cs@gmail.com",
+          "stocks",
+          stockToRemove.name
+        );
+        await deleteDoc(stockRef);
+
+        // Update local state
+        setStocks(stocks.filter((stock) => stock.id !== id));
+      }
+    } catch (error) {
+      console.error("Error removing stock from Firestore:", error);
+    }
   };
 
   // Calculate profit/loss for a stock
@@ -110,6 +205,7 @@ const Stocks = () => {
                     setSearchQuery(""); // Clear search query
                     setRecommendations([]); // Clear recommendations
                     fetchStockDetails(stock["1. symbol"]); // Fetch current stock details
+                    setStockSymbol(stock["1. symbol"]);
                   }}
                   className="p-2 hover:bg-gray-100 cursor-pointer rounded-lg"
                 >
@@ -178,7 +274,7 @@ const Stocks = () => {
         )}
 
         {/* Stock List */}
-        <div>
+        <div className="h-[40vh] overflow-y-auto">
           <h2 className="text-xl font-semibold text-gray-700 mb-4">
             Your Stocks
           </h2>
@@ -197,14 +293,14 @@ const Stocks = () => {
                         {stock.name}
                       </h3>
                       <p className="text-gray-600">
-                        Buy Price: ₹{stock.buyPrice.toFixed(2)} | Quantity:{" "}
-                        {stock.quantity} | Current Price: {stock.currentPrice}
+                        Buy Price: ₹{stock.buyPrice} | Quantity:{" "}
+                        {stock.quantity}
                       </p>
                       <p className="text-gray-600">
                         Total Investment: ₹
                         {(stock.buyPrice * stock.quantity).toFixed(2)}
                       </p>
-                      <p
+                      {/* <p
                         className={`text-sm ${
                           calculateProfitLoss(stock) >= 0
                             ? "text-green-600"
@@ -212,7 +308,7 @@ const Stocks = () => {
                         }`}
                       >
                         Profit/Loss: ₹{calculateProfitLoss(stock).toFixed(2)}
-                      </p>
+                      </p> */}
                     </div>
                     <button
                       onClick={() => removeStock(stock.id)}
