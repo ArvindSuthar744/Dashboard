@@ -10,15 +10,15 @@ function Dashboard() {
 
         <div className="flex items-center justify-center gap-3">
           <div className="w-[33%] border py-2 px-4 rounded-2xl">
-            <h2 className="text-2xl text-bold">&#x20B9; 150000</h2>
+            <h2 className="text-2xl text-bold">&#x20B9;150000</h2>
             <p>Invested</p>
           </div>
           <div className="w-[33%] border py-2 px-4 rounded-2xl">
-            <h2 className="text-2xl text-bold">&#x20B9; 150000</h2>
+            <h2 className="text-2xl text-bold">&#x20B9;150000</h2>
             <p>Current Value</p>
           </div>
           <div className="w-[33%] border py-2 px-4 rounded-2xl">
-            <h2 className="text-2xl text-bold">&#x20B9; 150000</h2>
+            <h2 className="text-2xl text-bold">&#x20B9;150000</h2>
             <p>Total P/L</p>
           </div>
         </div>
@@ -40,7 +40,10 @@ function Dashboard() {
               </div>
               {/* 4 */}
               <div className=" px-2 pb-2 border-1 rounded-xl p-4 mt-5 flex-1">
-                <h3 className="text-md font-bold">Low Performing Stocks</h3>
+                <div className="flex items-center justify-between">
+                <h3 className="text-md font-bold">Top Performing Stocks</h3>
+                <i className="fa-solid fa-arrow-trend-up text-xl"></i>
+                </div>
                 <ul className="pt-1 flex flex-col gap-2">
                   <li className="">Sampe</li>
                   <li className="">Sampe</li>
@@ -64,7 +67,11 @@ function Dashboard() {
               </div>
               {/* 4 */}
               <div className=" px-2 pb-2 border-1 rounded-xl p-4 mt-5 flex-1">
+                
+                <div className="flex items-center justify-between">
                 <h3 className="text-md font-bold">Low Performing Stocks</h3>
+                <i className="fa-solid fa-arrow-trend-down text-xl"></i>
+                </div>
                 <ul className="pt-1 flex flex-col gap-2">
                   <li className="">Sampe</li>
                   <li className="">Sampe</li>
