@@ -10,6 +10,23 @@ function Dashboard() {
   const [totalProfitLoss, setTotalProfitLoss] = useState(0); // State to store total profit/loss
   const [messages, setMessages] = useState([]); // State to store chat messages
   const [inputText, setInputText] = useState(""); // State to store user input
+  const [topPerformingStocks, setTopPerformingStocks] = useState([]); // State to store top performing stocks
+  const [lowPerformingStocks, setLowPerformingStocks] = useState([]); // State to store low performing stocks
+  const [mostActiveStock, setMostActiveStock] = useState("");
+
+  function getTrendingStocks() {
+    fetch("https://stock.indianapi.in/BSE_most_active", {
+      headers: {
+        "X-Api-Key": "sk-live-R2ERns4SNecrIvTJgi0h8omuqbfDdryNUswPP2m5",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setMostActiveStock(data);
+
+        console.log(mostActiveStock);
+      });
+  }
 
   // Fetch stocks data from Firestore and calculate total invested, current value, and profit/loss
   useEffect(() => {
@@ -24,6 +41,9 @@ function Dashboard() {
         let totalInvestedValue = 0;
         let totalCurrentValue = 0;
         let totalProfitLossValue = 0;
+        const stocksPerformance = [];
+
+        getTrendingStocks();
 
         // Fetch current price for each stock and calculate values
         for (const doc of snapshot.docs) {
@@ -40,15 +60,40 @@ function Dashboard() {
           );
 
           // Calculate values
-          totalInvestedValue += buyPrice * quantity;
-          totalCurrentValue += currentPrice * quantity;
-          totalProfitLossValue += (currentPrice - buyPrice) * quantity;
+          const investedValue = buyPrice * quantity;
+          const currentValue = currentPrice * quantity;
+          const profitLoss = (currentPrice - buyPrice) * quantity;
+
+          totalInvestedValue += investedValue;
+          totalCurrentValue += currentValue;
+          totalProfitLossValue += profitLoss;
+
+          // Store stock performance for sorting
+          stocksPerformance.push({
+            symbol,
+            profitLoss,
+          });
         }
+        console.log('Most active',mostActiveStock);
+        // Sort stocks by performance (best to worst)
+        stocksPerformance.sort((a, b) => b.profitLoss - a.profitLoss);
+
+        // Get top 5 best-performing stocks
+        const topPerformers = stocksPerformance
+          .slice(0, 5)
+          .map((stock) => stock.symbol);
+
+        // Get top 5 worst-performing stocks
+        const lowPerformers = stocksPerformance
+          .slice(-5)
+          .map((stock) => stock.symbol);
 
         // Update the state with the calculated values
         setTotalInvested(totalInvestedValue);
         setCurrentValue(totalCurrentValue);
         setTotalProfitLoss(totalProfitLossValue);
+        setTopPerformingStocks(topPerformers);
+        setLowPerformingStocks(lowPerformers);
       } catch (error) {
         console.error("Error fetching stocks data:", error);
       }
@@ -97,7 +142,7 @@ function Dashboard() {
       <div className="w-[100%] border">
         <div className="px-5 py-3.5 flex items-center  gap-3">
           <h1 className="text-2xl font-semibold">Dashboard</h1>
-          <i class="fa-solid fa-chart-simple text-2xl"></i>
+          <i className="fa-solid fa-chart-simple text-2xl"></i>
         </div>
 
         <div className="flex items-center justify-center gap-3 pt-1.5 px-5">
@@ -143,10 +188,9 @@ function Dashboard() {
                   <i className="fa-solid fa-arrow-trend-up text-xl text-green-700"></i>
                 </div>
                 <ul className="pt-1 flex flex-col gap-2">
-                  <li className="">Sampe</li>
-                  <li className="">Sampe</li>
-                  <li className="">Sampe</li>
-                  <li className="">Sampe</li>
+                  {topPerformingStocks.map((stock, index) => (
+                    <li key={index}>{stock}</li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -157,13 +201,13 @@ function Dashboard() {
               <div className="px-5  py-3 rounded-xl flex-1 shadow-lg">
                 <div className="flex items-center justify-between">
                   <h3 className="text-md font-semibold ">Market Stocks</h3>
-                  <i class="fa-solid fa-ranking-star text-xl  text-yellow-400"></i>
+                  <i className="fa-solid fa-ranking-star text-xl  text-yellow-400"></i>
                 </div>
                 <ul className="pt-1 flex flex-col gap-2">
-                  <li className="">Sampe</li>
-                  <li className="">Sampe</li>
-                  <li className="">Sampe</li>
-                  <li className="">Sampe</li>
+                  <li className="">NHPC</li>
+                  <li className="">TATA STEEL</li>
+                  <li className="">TORRENT</li>
+                  <li className="">ADANI</li>
                 </ul>
               </div>
               {/* 4 */}
@@ -175,10 +219,9 @@ function Dashboard() {
                   <i className="fa-solid fa-arrow-trend-down text-xl text-red-600"></i>
                 </div>
                 <ul className="pt-1 flex flex-col gap-2">
-                  <li className="">Sampe</li>
-                  <li className="">Sampe</li>
-                  <li className="">Sampe</li>
-                  <li className="">Sampe</li>
+                  {lowPerformingStocks.map((stock, index) => (
+                    <li key={index}>{stock}</li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -239,8 +282,13 @@ function Dashboard() {
                 id="inp"
                 className="border rounded-lg w-full h-[30px] my-2 text-sm px-3 font-semibold"
                 placeholder="Ask AI"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
               />
-              <button className="bg-blue-500 shadow-lg shadow-blue-500/50 py-0.5 px-2 rounded-sm">
+              <button
+                className="bg-blue-500 shadow-lg shadow-blue-500/50 py-0.5 px-2 rounded-sm"
+                onClick={handleSendMessage}
+              >
                 <i className="fa-solid fa-check"></i>
               </button>
             </div>
