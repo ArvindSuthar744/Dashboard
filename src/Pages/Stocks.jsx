@@ -50,7 +50,6 @@ const Stocks = () => {
       alert("Please fill all fields");
       return;
     }
-
     const newStock = {
       id: Date.now(),
       name,
@@ -58,6 +57,8 @@ const Stocks = () => {
       quantity: parseInt(quantity),
       currentPrice: currentStockDetails ? parseFloat(currentStockDetails["05. price"]) : 0, // Use current price from API
     };
+
+    console.log(newStock)
 
     setStocks([...stocks, newStock]);
     setName("");
@@ -189,7 +190,7 @@ const Stocks = () => {
                         {stock.name}
                       </h3>
                       <p className="text-gray-600">
-                        Buy Price: ₹{stock.buyPrice.toFixed(2)} | Quantity:{" "}
+                        Buy Price: ₹{stock.buyPrice.toFixed(2)} |  Quantity:{" "}
                         {stock.quantity}
                       </p>
                       <p className="text-gray-600">
