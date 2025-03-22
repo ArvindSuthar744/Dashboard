@@ -150,7 +150,7 @@ function Dashboard() {
                   <li className="">Sampe</li>
                   <li className="">Sampe</li>
                   <li className="">Sampe</li>
-                  <li className="">Sampe</li>
+                  <li className="">Sample1</li>
                 </ul>
               </div>
             </div>
