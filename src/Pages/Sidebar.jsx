@@ -5,8 +5,8 @@ function Sidebar() {
   const navigate = useNavigate();
 
   return (
-    <div className="">
-      <div className="w-[200px] h-lvh bg-[#032313] text-white flex flex-col gap-5 ">
+    <div className="bg-[#032313]">
+      <div className="w-[200px] h-lvh  text-white flex flex-col gap-5 ">
         <div className="py-5 flex gap-2.5 items-center justify-center">
           <i className="fa-solid fa-chart-pie text-2xl"></i>
           <h1 className="text-xl">Investor-Hub</h1>

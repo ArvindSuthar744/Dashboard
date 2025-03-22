@@ -81,6 +81,9 @@ function Dashboard() {
     fetchStocksAndCalculateValues();
   }, []);
 
+
+
+
   return (
     <>
       <div className="w-[100%] border">
@@ -166,6 +169,7 @@ function Dashboard() {
                 </ul>
               </div>
             </div>
+
           </div>
 
           <div className="w-[400px] h-[75vh] py-1 px-3 text-xl rounded-xl flex flex-col justify-between shadow-lg border-2 border-[#e8e8e8]">
