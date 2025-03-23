@@ -7,6 +7,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 import ChatResponse from "../Components/ChatResponse.component";
 import Groq from "groq-sdk";
 import taxIcon from "../assets/tax.png";
+import pie from "../assets/pie.png";
 import MDEditor from "@uiw/react-md-editor";
 
 function Dashboard() {
@@ -48,18 +49,25 @@ function Dashboard() {
 
         for (const doc of snapshot.docs) {
           const stock = doc.data();
-          const { buyPrice, quantity, symbol } = stock;
+          const { buyPrice, quantity, symbol, buyDate } = stock;
           console.log("mystock", stock);
 
-          // Fetch current price from Alpha Vantage API
+          // Fetch current price from the new API
+          const formattedSymbol = symbol.split(".")[0]; // Remove .BSE or .NSE
           const currentPriceResponse = await fetch(
-            `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=ZNJ12HBDRNEBYCNT`
-          );
-          const currentPriceData = await currentPriceResponse.json();
-          const currentPrice = parseFloat(
-            currentPriceData["Global Quote"]["05. price"]
+            `https://stock.indianapi.in/stock?name=${formattedSymbol}`,
+            {
+              headers: {
+                "X-Api-Key": "sk-live-R2ERns4SNecrIvTJgi0h8omuqbfDdryNUswPP2m5",
+              },
+            }
           );
 
+          const currentPriceData = await currentPriceResponse.json();
+          const currentPrice = currentPriceData.currentPrice.BSE
+            ? parseFloat(currentPriceData.currentPrice.BSE)
+            : parseFloat(currentPriceData.currentPrice.NSE); // Extract BSE price
+          console.log("Get current price: ", currentPrice, symbol);
           const investedValue = buyPrice * quantity;
           const currentValue = currentPrice * quantity;
           const profitLoss = (currentPrice - buyPrice) * quantity;
@@ -73,6 +81,7 @@ function Dashboard() {
             profitLoss,
             quantity,
             buyPrice,
+            buyDate,
           });
         }
 
@@ -125,16 +134,24 @@ function Dashboard() {
       const newPrompt = stocks
         .map(
           (stock) =>
-            `Stock name ₹${stock.symbol}: ${stock.quantity} quantity shares at ₹${stock.buyPrice} each : Total profit or loss ${stock.profitLoss}`
+            `Stock name ₹${stock.symbol}: ${
+              stock.quantity
+            } quantity shares at ₹${
+              stock.buyPrice
+            } each : Total profit or loss ${stock.profitLoss.toFixed(
+              2
+            )}: Buy Date ${stock.buyDate}`
         )
         .join("\n");
+
+      console.log("Buy Date: ", newPrompt);
 
       const response = await groq.chat.completions.create({
         model: "deepseek-r1-distill-llama-70b",
         messages: [
           {
             role: "system",
-            content: `You are a AI investor tax advisor, analyze the user portfolio and give a tax summary of his portfolio. The summary is of 2-3 line maxium not exceding 3 lines ... ${newPrompt}`,
+            content: `You are a AI investor tax advisor, analyze the user portfolio and give a tax summary of his portfolio. The summary is of 2-3 line maxium not exceding 3 lines ... ${newPrompt} give a small summary by calculating stock price, quantity and buying tenure (by buyDate), and then create summary of tax on that investments. Always say the tax amount by calculating the tenure by analyaing buyDate and currentDate, for long term captial gain and short term capital gain.`,
           },
         ],
       });
@@ -224,9 +241,10 @@ function Dashboard() {
             {/* Left */}
             <div className="w-2/4 flex-1 gap-5 flex flex-col relative">
               <div className="px-5 py-3 rounded-xl flex-1 shadow-lg border-2 border-[#e8e8e8]">
-                <h3 className="text-md font-semibold ">
-                  Portfolio Performance
-                </h3>
+                <div className="flex items-center justify-between ">
+                  <h3 className="text-md font-semibold ">Sectorwise</h3>
+                  <img className="w-[25px]" src={pie} />
+                </div>
                 <PieChartComponent />
               </div>
               <div className="px-5 py-3 rounded-xl flex-1 shadow-lg border-2 border-[#e8e8e8]">
@@ -251,20 +269,18 @@ function Dashboard() {
 
             {/* Right */}
             <div className=" w-2/4 flex-1 gap-5 flex flex-col">
-              <div className="px-5 py-3 rounded-xl flex-1 shadow-lg border-2 border-[#e8e8e8]">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-md font-semibold">Tax Summary</h3>
+              <div className="px-5 py-3 rounded-xl flex-1 shadow-lg border-2 max-h-[50vh]   overflow-y-auto  border-[#e8e8e8]">
+                <div className="flex items-center justify-between ">
+                  <h3 className="text-md font-semibold ">Tax Summary</h3>
                   <img className="w-[25px]" src={taxIcon} />
                 </div>
-                <div className="max-h-full mt-5 max-h-[30vh] overflow-y-auto">
-                
-                    <MDEditor.Markdown
-                      className="text-sm md:text-lg"
-                      source={taxSummary}
-                      style={{ backgroundColor: "white", color: "black" }}
-                    />{" "}
-                  </div>
-                
+                <div className="max-h-full  mt-5 ">
+                  <MDEditor.Markdown
+                    className="text-sm md:text-lg"
+                    source={taxSummary}
+                    style={{ backgroundColor: "white", color: "black" }}
+                  />{" "}
+                </div>
               </div>
               <div className="px-5 py-3 rounded-xl flex-1 shadow-lg border-2 border-[#e8e8e8]">
                 <div className="flex items-center justify-between">
@@ -343,5 +359,4 @@ function Dashboard() {
     </>
   );
 }
-
 export default Dashboard;
