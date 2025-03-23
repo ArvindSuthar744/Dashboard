@@ -37,6 +37,11 @@ function Dashboard() {
 
   // Fetch stocks data from Firestore and calculate values
   useEffect(() => {
+    if (!stocks) {
+      setStocks(JSON.parse(localStorage.getItem("stocks")));
+    }
+    
+    console.log('LS: ' ,stocks);
     const fetchStocksAndCalculateValues = async () => {
       try {
         const stocksRef = collection(db, "Users", "cs@gmail.com", "stocks");
@@ -113,6 +118,10 @@ function Dashboard() {
         setTopPerformingStocks(topPerformers);
         setLowPerformingStocks(lowPerformers);
         setStocks(stocksPerformance); // Update stocks state
+        if(stocks){
+          
+          localStorage.setItem("stocks", JSON.stringify(stocksPerformance));
+        }
       } catch (error) {
         console.error("Error fetching stocks data:", error);
       }

@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router";
 import home from "../assets/home.svg"
 import stocks from "../assets/stocks.svg"
 import tax from "../assets/tax.svg"
+import news from "../assets/news.svg"
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -38,6 +39,13 @@ function Sidebar() {
             >
                 <img className="w-[20px]" src={tax} />
                 <h1 className="text-lg">Tax Cal.</h1>
+            </div>
+            <div
+              onClick={() => navigate("/news")}
+              className="py-1 px-7 flex gap-2.5 items-center cursor-pointer mt-5"
+            >
+                <img className="w-[16px]" src={news} />
+                <h1 className="text-lg">News</h1>
             </div>
           </div>
 

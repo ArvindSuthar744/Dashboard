@@ -276,7 +276,7 @@ const Stocks = () => {
                 <strong>Symbol:</strong> {currentStockDetails["01. symbol"]}
               </p>
               <p className="text-gray-800">
-                <strong>Price:</strong> ${currentStockDetails["05. price"]}
+                <strong>Price:</strong> ₹{currentStockDetails["05. price"]}
               </p>
               <p className="text-gray-800">
                 <strong>Change:</strong> {currentStockDetails["09. change"]} (
