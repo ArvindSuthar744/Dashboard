@@ -14,6 +14,7 @@ const Stocks = () => {
   const [name, setName] = useState(""); // Stock name input
   const [buyPrice, setBuyPrice] = useState(""); // Buy price input
   const [quantity, setQuantity] = useState(""); // Quantity input
+  const [buyDate, setBuyDate] = useState(""); // Quantity input
   const [searchQuery, setSearchQuery] = useState(""); // Search query
   const [recommendations, setRecommendations] = useState([]); // Stock name recommendations
   const [currentStockDetails, setCurrentStockDetails] = useState(null); // Current stock details
@@ -109,6 +110,7 @@ const Stocks = () => {
       symbol: stockSymbol,
       buyPrice: parseFloat(buyPrice),
       quantity: parseInt(quantity),
+      buyDate: buyDate,
       currentPrice: currentStockDetails
         ? parseFloat(currentStockDetails["05. price"])
         : 0, // Use current price from API
@@ -128,6 +130,7 @@ const Stocks = () => {
         symbol: stockSymbol,
         buyPrice: parseFloat(newStock.buyPrice),
         quantity: parseInt(newStock.quantity),
+        buyDate: newStock.buyDate,
       });
 
       console.log("Added manually --> ", newStock);
@@ -184,8 +187,10 @@ const Stocks = () => {
         {/* Search Bar for Stock Recommendations */}
         <div className="mb-6">
           <div className="flex gap-2 items-center mb-3">
-          <i className="fa-solid fa-magnifying-glass text-lg"></i>
-          <h2 className="text-xl font-semibold text-gray-700 ">Search Stock</h2>
+            <i className="fa-solid fa-magnifying-glass text-lg"></i>
+            <h2 className="text-xl font-semibold text-gray-700 ">
+              Search Stock
+            </h2>
           </div>
           <input
             type="text"
@@ -219,8 +224,8 @@ const Stocks = () => {
         {/* Input Form */}
         <div className="mb-6">
           <div className="flex gap-2 items-center mb-3">
-          <i class="fa-solid fa-arrow-up-from-bracket text-lg"></i>
-          <h2 className="text-xl font-semibold text-gray-700 ">Add Stock</h2>
+            <i class="fa-solid fa-arrow-up-from-bracket text-lg"></i>
+            <h2 className="text-xl font-semibold text-gray-700 ">Add Stock</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
             <input
@@ -244,14 +249,20 @@ const Stocks = () => {
               onChange={(e) => setQuantity(e.target.value)}
               className="p-2 border border-gray-300 rounded-lg focus:outline-none"
             />
+            <input
+              type="date"
+              placeholder="Date"
+              value={buyDate}
+              onChange={(e) => setBuyDate(e.target.value)}
+              className="p-2 border border-gray-300 rounded-lg focus:outline-none"
+            />
             <button
-            onClick={addStock}
-            className="w-full  bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
-          >
-            Add Stock
-          </button>
+              onClick={addStock}
+              className="w-full  bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+            >
+              Add Stock
+            </button>
           </div>
-          
         </div>
 
         {/* Display Current Stock Details */}
@@ -278,8 +289,8 @@ const Stocks = () => {
         {/* Stock List */}
         <div className="h-[45vh] overflow-y-auto ">
           <div className="flex gap-2 items-center mb-3">
-          <i class="fa-solid fa-briefcase text-xl"></i>
-          <h2 className="text-xl font-semibold text-gray-700">Your Stocks</h2>
+            <i class="fa-solid fa-briefcase text-xl"></i>
+            <h2 className="text-xl font-semibold text-gray-700">Your Stocks</h2>
           </div>
           {stocks.length === 0 ? (
             <p className="text-gray-600">No stocks added yet.</p>
@@ -316,12 +327,11 @@ const Stocks = () => {
                     <button
                       onClick={() => removeStock(stock.id)}
                       className="text-red-500 hover:text-white hover:bg-red-700 transition-all duration-300  border text-center p-1 rounded-md"
-                    ><i class="fa-solid fa-trash-can text-lg translate-y-[-0.5] px-1"></i>
+                    >
+                      <i class="fa-solid fa-trash-can text-lg translate-y-[-0.5] px-1"></i>
                       {/* <i className="fa-solid fa-xmark text-xl translate-y-0.5 px-1"></i> */}
                       Remove
                     </button>
-                      
-
                   </div>
                 </div>
               ))}

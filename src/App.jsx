@@ -1,6 +1,6 @@
 import "./App.css";
 import Dashboard from "./Pages/Dashboard";
-import News from "./Pages/News";
+import EquityTaxCalculator from "./Pages/EquityTaxCalculator";
 import Sidebar from "./Pages/Sidebar";
 import Stocks from "./Pages/Stocks";
 
@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/stocks" element={<Stocks />} />
-          <Route path="/news" element={<News/>} />
+          <Route path="/taxcal" element={<EquityTaxCalculator/>} />
         </Routes>
       </BrowserRouter>
     </div>
